@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 """
-Khyontek AI — Certificate PDF Generator FINAL v6
+Aarhi Impact Foundation — Certificate PDF Generator
+Adapted from Khyontek AI Certificate System v3 (generate_cert.py FINAL v6)
 - Logo strip and signature block are fully independent
 - Up to 3 collab logos in header strip
-- Up to 5 signatories in signature block (Pritam + NJK + 3 collabs)
+- Up to 5 signatories in signature block (NJK + Alakesh + 3 collabs)
 - Dynamic font sizing for signature names based on signatory count
 - Text truncation prevents overflow between signature slots
 - Collab logo width capped at 200px to prevent header overflow
 - Signatures: PNG image → Brittany font fallback → NothingYouCouldDo last resort
 - Footer always fixed at bottom — never overlaps
-- Three-line right footer: CIN / DPIIT+Assam Startup / Verify URL
+- Three-line right footer: Reg. number / 12A·80G·CSR-1 / Verify URL
 - URL-based image loading from Cloudflare R2
 """
 import sys, json, argparse, os, math, urllib.request, base64, tempfile, io
@@ -26,12 +27,12 @@ SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
 FONT_DIR    = os.path.join(SCRIPT_DIR, 'fonts')
 LOGO_PATH   = os.path.join(FONT_DIR, 'logo.png')
 COLLAB_DIR  = os.path.join(FONT_DIR, 'collab-logos')
-SIG_PRITAM  = os.path.join(FONT_DIR, 'sig_pritam_deka.png')
+SIG_ALAKESH = os.path.join(FONT_DIR, 'sig_alakesh.png')
 SIG_NJK     = os.path.join(FONT_DIR, 'sig_njk.png')
 SIG_FONT_BRITTANY = os.path.join(FONT_DIR, 'BrittanySignature.ttf')
 SIG_FONT_FALLBACK = os.path.join(FONT_DIR, 'NothingYouCouldDo-Regular.ttf')
 
-NAVY=(26,40,112); BLUE=(43,62,170); GOLD=(245,166,35)
+NAVY=(13,59,62); BLUE=(13,59,62); GOLD=(232,168,56)  # NAVY/BLUE both = AIF Deep Teal #0D3B3E; GOLD = #E8A838
 GREY=(130,135,150); DGREY=(50,55,85); BLK=(26,26,26)
 LGREY=(235,237,245); WMB=(220,225,245); WMG=(252,238,200)
 WHITE=(255,255,255)
@@ -202,7 +203,7 @@ def generate(data):
     show_njk   = meta.get('show_njk_signature', data.get('show_njk_signature', False))
 
     duration   = data.get('duration','').strip()
-    cert_id    = data.get('cert_id','KAI-SRIP-260001')
+    cert_id    = data.get('cert_id','AIF-INT-260001')
     end_date   = data.get('issue_date','')
     start_date = data.get('start_date','')
     tier       = data.get('tier','Completion')
@@ -261,11 +262,11 @@ def generate(data):
     # ── LOGO STRIP — only collabs with a logo (independent of signatures) ──
     LOGO_H=300; COLLAB_H=220; STRIP_TOP=10; MAX_COLLAB_LOGO_W=320
 
-    kai=load_img(LOGO_PATH,LOGO_H)
-    if kai: img.paste(kai,(PAD,STRIP_TOP)); kai_right=PAD+kai.width
+    aif=load_img(LOGO_PATH,LOGO_H)
+    if aif: img.paste(aif,(PAD,STRIP_TOP)); kai_right=PAD+aif.width
     else:
-        fL=font("Italiana-Regular.ttf",100)
-        d.text((PAD,STRIP_TOP),"Khyontek.ai",font=fL,fill=BLUE); kai_right=PAD+420
+        fL=font("Italiana-Regular.ttf",70)
+        d.text((PAD,STRIP_TOP),"Aarhi Impact Foundation",font=fL,fill=BLUE); kai_right=PAD+620
 
     # Collabs with logo — R2 key → base64 → local path
     collabs_with_logo=[c for c in collabs if c.get('logo_key') or c.get('logo_b64') or c.get('logo_path')]
@@ -327,9 +328,9 @@ def generate(data):
     fBo=font("Lora-Regular.ttf",40); fBi=font("Lora-Italic.ttf",40)
     named_collabs=[c['name'].strip() for c in collabs if c.get('name','').strip()]
     if named_collabs:
-        org_line=f"offered by Khyontek AI Pvt Ltd in collaboration with {' and '.join(named_collabs)},"
+        org_line=f"offered by Aarhi Impact Foundation in collaboration with {' and '.join(named_collabs)},"
     else:
-        org_line="offered by Khyontek AI Pvt Ltd,"
+        org_line="offered by Aarhi Impact Foundation,"
     lines=[(f"has successfully completed the {programme}",fBo),(org_line,fBo),
            ("participating in the research track:",fBo),(f"'{track}'",fBi),
            (f"from {fmt_date(start_date)} to {fmt_date(end_date)}.",fBo)]
@@ -354,12 +355,13 @@ def generate(data):
     L3_Y=FOOTER_BAR_Y-24-LINE_GAP   # Verify URL
     L2_Y=L3_Y-LINE_GAP               # DPIIT + Assam Startup
     L1_Y=L2_Y-LINE_GAP               # CIN
-    d.text((W-PAD-get_tw(d,"CIN: U62020AS2026PTC029657",fF),L1_Y),
-           "CIN: U62020AS2026PTC029657",font=fF,fill=GREY)
-    d.text((W-PAD-get_tw(d,"DPIIT Recognised  ·  Assam Startup Recognised",fFsm),L2_Y),
-           "DPIIT Recognised  ·  Assam Startup Recognised",font=fFsm,fill=GREY)
-    d.text((W-PAD-get_tw(d,"Verify at: programmes.khyontekai.com/verify",fFsm),L3_Y),
-           "Verify at: programmes.khyontekai.com/verify",font=fFsm,fill=BLUE)
+    REG_LINE = "CIN: U88900AS2025NPL028634  ·  Section 8 Licence No: 171467"
+    d.text((W-PAD-get_tw(d,REG_LINE,fF),L1_Y),
+           REG_LINE,font=fF,fill=GREY)
+    d.text((W-PAD-get_tw(d,"12A  ·  80G  ·  CSR-1 Registered",fFsm),L2_Y),
+           "12A  ·  80G  ·  CSR-1 Registered",font=fFsm,fill=GREY)
+    d.text((W-PAD-get_tw(d,"Verify at: verify.aarhiimpactfoundation.org",fFsm),L3_Y),
+           "Verify at: verify.aarhiimpactfoundation.org",font=fFsm,fill=BLUE)
 
     # ── SIGNATURE BLOCK — independent of logo count ──
     SIG_IMG_H     = 120
@@ -369,22 +371,24 @@ def generate(data):
 
     sigs=[]
 
-    # Pritam — always first
+    # NJK — always first
     # Priority: R2 URL → local PNG → Brittany font → NothingYouCouldDo
-    # Pritam — R2 key → local PNG → Brittany font
-    pritam_key = meta.get('pritam_sig_key', 'signatures/sig_pritam.png')
-    sig_p = load_r2_img(pritam_key, SIG_IMG_H)
-    if not sig_p: sig_p = load_img(SIG_PRITAM, SIG_IMG_H)
-    if not sig_p: sig_p = make_sig_img("Pritam Deka", SIG_FONT_BRITTANY, size=90, max_w=300, max_h=SIG_IMG_H)
-    sigs.append({'img':sig_p,'name':'Dr Pritam Deka','title':'CEO, Khyontek AI'})
+    njk_key = meta.get('njk_sig_key', 'signatures/sig_njk.png')
+    sig_n = load_r2_img(njk_key, SIG_IMG_H)
+    if not sig_n: sig_n = load_img(SIG_NJK, SIG_IMG_H)
+    if not sig_n: sig_n = make_sig_img("Nayan J Kalita", SIG_FONT_BRITTANY, size=85, max_w=300, max_h=SIG_IMG_H)
+    sigs.append({'img':sig_n,'name':'Nayan Jyoti Kalita','title':'Director, Aarhi Impact Foundation'})
 
-    # NJK — if toggled
+    # Alakesh — if toggled
+    # NOTE: this still reads the `show_njk_signature` meta/data key from the admin
+    # portal for now (unchanged external contract). Rename to `show_alakesh_signature`
+    # in aif-programmes once that repo's form/API is edited too — see chat notes.
     if show_njk:
-        njk_key = meta.get('njk_sig_key', 'signatures/sig_njk.png')
-        sig_n = load_r2_img(njk_key, SIG_IMG_H)
-        if not sig_n: sig_n = load_img(SIG_NJK, SIG_IMG_H)
-        if not sig_n: sig_n = make_sig_img("Nayan J Kalita", SIG_FONT_BRITTANY, size=85, max_w=300, max_h=SIG_IMG_H)
-        sigs.append({'img':sig_n,'name':'Nayan Jyoti Kalita','title':'CSO, Khyontek AI'})
+        alakesh_key = meta.get('alakesh_sig_key', 'signatures/sig_alakesh.png')
+        sig_a = load_r2_img(alakesh_key, SIG_IMG_H)
+        if not sig_a: sig_a = load_img(SIG_ALAKESH, SIG_IMG_H)
+        if not sig_a: sig_a = make_sig_img("Alakesh Sarmah", SIG_FONT_BRITTANY, size=85, max_w=300, max_h=SIG_IMG_H)
+        sigs.append({'img':sig_a,'name':'Alakesh Sarmah','title':'Director, Aarhi Impact Foundation'})
 
     # Collab signatories — R2 key → Brittany font fallback
     for c in collabs:
@@ -434,7 +438,7 @@ def generate(data):
     d.rectangle([0,FOOTER_BAR_Y,  W,FOOTER_BAR_Y+8],fill=GOLD)
     d.rectangle([0,FOOTER_BAR_Y+8,W,H],             fill=NAVY)
     fBot=font("WorkSans-Regular.ttf",24)
-    em="programmes@khyontekai.com"; cp="© 2026 Khyontek AI Private Limited"
+    em="certificates@aarhiimpactfoundation.org"; cp="© 2026 Aarhi Impact Foundation"
     d.text((PAD,FOOTER_TEXT_Y),em,font=fBot,fill=(160,170,215))
     d.text((W-PAD-get_tw(d,cp,fBot),FOOTER_TEXT_Y),cp,font=fBot,fill=(160,170,215))
 
@@ -447,8 +451,8 @@ def save_pdf(img,out):
     buf.seek(0)
     pw,ph=landscape(A4)
     c=rlcanvas.Canvas(out,pagesize=(pw,ph))
-    c.setTitle("Certificate — Khyontek AI")
-    c.setAuthor("Khyontek AI Pvt Ltd")
+    c.setTitle("Certificate — Aarhi Impact Foundation")
+    c.setAuthor("Aarhi Impact Foundation")
     c.drawImage(ImageReader(buf),0,0,width=pw,height=ph)
     c.save()
 
