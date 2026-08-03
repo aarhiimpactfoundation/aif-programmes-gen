@@ -14,7 +14,7 @@ dotenv.config({ path: path.join(__dirname, '..', '.env.local') });
 
 // ── Config ──
 const MONGODB_URI = process.env.MONGODB_URI;
-const DB_NAME     = process.env.DB_NAME || 'khyontek_certs';
+const DB_NAME     = process.env.DB_NAME || 'aarhi_certs';
 const EMAIL_SALT  = process.env.EMAIL_SALT;
 const COLLECTION  = 'certificates';
 
@@ -91,8 +91,8 @@ function validateRow(row) {
   if (!row.issue_date)     errors.push('issue_date is empty');
 
   // Cert ID format check
-  if (row.cert_id && !/^KAI-[A-Z0-9]+-\d{6,8}$/.test(row.cert_id.trim().toUpperCase()))
-    errors.push(`cert_id format invalid: "${row.cert_id}" — expected KAI-[PROG]-[YY][SERIAL]`);
+  if (row.cert_id && !/^AIF-[A-Z0-9]+-\d{6,8}$/.test(row.cert_id.trim().toUpperCase()))
+    errors.push(`cert_id format invalid: "${row.cert_id}" — expected AIF-[PROG]-[YY][SERIAL]`);
 
   return errors;
 }
@@ -113,7 +113,7 @@ async function main() {
   }
 
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  console.log('  Khyontek AI — Bulk Certificate Insert');
+  console.log('  Aarhi Impact Foundation — Bulk Certificate Insert');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
   // Parse CSV
@@ -201,8 +201,8 @@ async function main() {
       duration:       row.duration.trim(),
       issue_date:     row.issue_date.trim(),
       issued_by:      [
-        'NJK, Co-Founder & CSO',
-        'Dr. Pritam Deka, Co-Founder & CEO'
+        'Nayan Jyoti Kalita, Director',
+        'Alakesh Sarmah, Director'
       ],
       status:     'valid',
       created_at: new Date(),
@@ -241,7 +241,7 @@ async function main() {
 
   if (inserted > 0) {
     console.log('  All certificates inserted successfully.');
-    console.log('  Verify at: https://verify.khyontekai.com\n');
+    console.log('  Verify at: https://verify.aarhiimpactfoundation.org\n');
   }
 }
 

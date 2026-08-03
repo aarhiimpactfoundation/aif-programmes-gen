@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 const MONGODB_URI = process.env.MONGODB_URI;
-const DB_NAME     = process.env.DB_NAME || 'khyontek_certs';
+const DB_NAME     = process.env.DB_NAME || 'aarhi_certs';
 const EMAIL_SALT  = process.env.EMAIL_SALT;
 
 function hashEmail(email) {
@@ -22,7 +22,7 @@ function hashEmail(email) {
 
 // ── EDIT THIS BLOCK FOR EACH CERTIFICATE ──
 const certificate = {
-  cert_id:        'KAI-SRIP-250001',
+  cert_id:        'AIF-INT-250001',
   recipient_name: 'Full Name Here',
   email:          'student@email.com',        // plain email — stored as hash only
   programme:      'Summer Research Immersion Programme',
@@ -31,7 +31,7 @@ const certificate = {
   tier:           'Research Contribution',    // 'Research Contribution' | 'Completion'
   duration:       '45 Days',
   issue_date:     '2025-08-15',               // ISO date string
-  issued_by:      ['NJK, Co-Founder & CSO', 'Dr. Pritam Deka, Co-Founder & CEO'],
+  issued_by:      ['Nayan Jyoti Kalita, Director', 'Alakesh Sarmah, Director'],
   status:         'valid',                    // 'valid' | 'revoked'
   created_at:     new Date(),
 };
