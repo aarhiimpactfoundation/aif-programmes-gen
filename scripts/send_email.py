@@ -100,7 +100,7 @@ def main():
         json={"from":f"Aarhi Impact Foundation <{from_email}>","to":[to_email],
               "subject":f"Your Certificate — {programme} | Aarhi Impact Foundation",
               "html":html,
-              "attachments":[{"filename":pdf_filename,"content":pdf_b64}]},
+              "attachments":[{"filename":pdf_filename,"content":pdf_b64,"content_type":"application/pdf"}]},
         timeout=30
     )
 
