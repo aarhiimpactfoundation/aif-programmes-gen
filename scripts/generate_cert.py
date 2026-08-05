@@ -153,6 +153,80 @@ def make_sig_img(text, font_path, size=80, max_w=260, max_h=90, color=NAVY):
         print(f"WARNING: Could not render sig text: {e}")
         return None
 
+def icon_dhol(d, cx, cy, s, color, width=6):
+    """Two-headed barrel drum, slung horizontally — classic Bihu dhol silhouette."""
+    d.ellipse([cx-s,cy-s*0.55,cx-s+s*0.5,cy+s*0.55], outline=color, width=width)
+    d.ellipse([cx+s-s*0.5,cy-s*0.42,cx+s,cy+s*0.42], outline=color, width=width)
+    d.line([cx-s+s*0.25,cy-s*0.55,cx+s-s*0.25,cy-s*0.42], fill=color, width=width)
+    d.line([cx-s+s*0.25,cy+s*0.55,cx+s-s*0.25,cy+s*0.42], fill=color, width=width)
+    for i in range(5):
+        t=i/4; x0=cx-s+s*0.25+t*(2*s-s*0.5)
+        d.line([x0,cy-s*0.5+t*0.13*s,x0+s*0.18,cy+s*0.42-t*0.06*s], fill=color, width=max(2,width-3))
+
+def icon_khol(d, cx, cy, s, color, width=6):
+    """Asymmetric earthen drum, wider at one end — Sattriya/Bhaona tradition."""
+    x0,x1 = cx-s, cx+s*0.75
+    r0,r1 = s*0.42, s*0.22
+    d.line([x0,cy-r0,x1,cy-r1], fill=color, width=width)
+    d.line([x0,cy+r0,x1,cy+r1], fill=color, width=width)
+    d.ellipse([x0-r0*0.35,cy-r0,x0+r0*0.35,cy+r0], outline=color, width=width)
+    d.ellipse([x1-r1*0.5,cy-r1,x1+r1*0.5,cy+r1], outline=color, width=width)
+
+def icon_kham(d, cx, cy, s, color, width=6):
+    """Bodo kham — straight cylindrical drum, upright."""
+    d.rectangle([cx-s*0.45,cy-s,cx+s*0.45,cy+s], outline=color, width=width)
+    d.ellipse([cx-s*0.45,cy-s-s*0.16,cx+s*0.45,cy-s+s*0.16], outline=color, width=width)
+    d.ellipse([cx-s*0.45,cy+s-s*0.16,cx+s*0.45,cy+s+s*0.16], outline=color, width=width)
+    for ny in (cy-s*0.4,cy,cy+s*0.4):
+        d.line([cx-s*0.45,ny,cx+s*0.45,ny], fill=color, width=max(1,width-4))
+
+def icon_gogona(d, cx, cy, s, color, width=5):
+    """Bamboo jaw harp — thin forked bamboo strip."""
+    d.line([cx-s*0.28,cy-s,cx-s*0.28,cy+s*0.6], fill=color, width=width)
+    d.line([cx+s*0.28,cy-s,cx+s*0.28,cy+s*0.6], fill=color, width=width)
+    d.line([cx-s*0.28,cy+s*0.6,cx+s*0.28,cy+s*0.6], fill=color, width=width)
+    d.line([cx-s*0.28,cy-s,cx,cy-s*1.3], fill=color, width=max(2,width-1))
+    d.line([cx+s*0.28,cy-s,cx,cy-s*1.3], fill=color, width=max(2,width-1))
+
+def icon_pepa(d, cx, cy, s, color, width=6):
+    """Buffalo-horn pipe — curved tapering horn."""
+    bbox=[cx-s*1.1,cy-s*0.9,cx+s*0.5,cy+s*0.9]
+    d.arc(bbox, 300, 160, fill=color, width=width)
+    d.ellipse([cx-s*0.15,cy-s*0.75,cx+s*0.2,cy-s*0.4], outline=color, width=max(2,width-2))
+
+def icon_taal(d, cx, cy, s, color, width=5):
+    """Small hand cymbals — overlapping pair."""
+    d.ellipse([cx-s*0.9,cy-s*0.55,cx-s*0.9+s*1.1,cy-s*0.55+s*1.1], outline=color, width=width)
+    d.ellipse([cx-s*0.2,cy-s*0.15,cx-s*0.2+s*1.1,cy-s*0.15+s*1.1], outline=color, width=width)
+
+def icon_bortaal(d, cx, cy, s, color, width=6):
+    """Large cymbals — bigger overlapping pair, matching Taal's motif at scale."""
+    icon_taal(d, cx, cy, s*1.4, color, width)
+
+def icon_japi(d, cx, cy, s, color, width=5):
+    """Conical bamboo hat."""
+    d.polygon([(cx,cy-s),(cx-s,cy+s*0.4),(cx+s,cy+s*0.4)], outline=color, width=width)
+    for r in (0.35,0.65,0.92):
+        d.arc([cx-s*r,cy+s*0.4-s*r*0.35,cx+s*r,cy+s*0.4+s*r*0.35], 190,350, fill=color, width=max(2,width-3))
+
+NE_ICONS = [icon_dhol, icon_khol, icon_kham, icon_gogona, icon_pepa, icon_taal, icon_bortaal, icon_japi]
+
+def draw_gamosa_band(d, x0, x1, y, height=34):
+    """A band in the spirit of a gamosa's woven red border — an original
+    geometric interpretation (repeating diamond motif between two ruled
+    lines), not a reproduction of any specific weave."""
+    RED=(178,42,38)
+    d.rectangle([x0,y,x1,y+5], fill=RED)
+    d.rectangle([x0,y+height-5,x1,y+height], fill=RED)
+    cy=y+height//2
+    motif_w=50; s=11
+    x=x0+motif_w//2
+    while x<x1-motif_w//2:
+        d.polygon([(x,cy-s),(x+s,cy),(x,cy+s),(x-s,cy)], outline=RED, width=3)
+        d.ellipse([x-3,cy-3,x+3,cy+3], fill=RED)
+        x+=motif_w
+    return y+height
+
 def generate(data):
     W,H=3307,2339; img=Image.new("RGB",(W,H),WHITE); d=ImageDraw.Draw(img)
     PAD=140; MID=W//2
@@ -200,7 +274,7 @@ def generate(data):
                 collabs.append({'name':name,'logo_path':logo_path,
                     'sig_name':sig_name,'sig_title':sig_title,'sig_url':sig_url})
 
-    show_njk   = meta.get('show_njk_signature', data.get('show_njk_signature', False))
+    show_alakesh   = meta.get('show_alakesh_signature', data.get('show_alakesh_signature', False))
 
     duration   = data.get('duration','').strip()
     cert_id    = data.get('cert_id','AIF-INT-260001')
@@ -215,52 +289,23 @@ def generate(data):
     institution = meta.get('institution', data.get('institution', data.get('college',''))).strip()
 
 
-    # ── WATERMARKS ──
-    hx,ht,hh,amp,freq=200,300,1600,70,2.8
-    for i in range(119):
-        t0,t1=i/120,(i+1)/120; y0=ht+t0*hh; y1=ht+t1*hh
-        x0a=hx+int(amp*math.sin(2*math.pi*freq*t0)); x1a=hx+int(amp*math.sin(2*math.pi*freq*t1))
-        x0b=hx+int(amp*math.sin(2*math.pi*freq*t0+math.pi)); x1b=hx+int(amp*math.sin(2*math.pi*freq*t1+math.pi))
-        d.line([x0a,y0,x1a,y1],fill=WMB,width=6); d.line([x0b,y0,x1b,y1],fill=WMB,width=6)
-        if i%8==0: d.line([x0a,y0,x0b,y0],fill=WMB,width=4)
-    layers=[[(2950,480),(2950,660),(2950,840),(2950,1020)],
-            [(3100,560),(3100,740),(3100,920)],[(3240,640),(3240,820)]]
-    for li in range(len(layers)-1):
-        for n1 in layers[li]:
-            for n2 in layers[li+1]: d.line([n1,n2],fill=WMB,width=4)
-    for layer in layers:
-        for n in layer: d.ellipse([n[0]-22,n[1]-22,n[0]+22,n[1]+22],fill=WMB)
-    mn=[(400,760),(530,860),(360,960),(480,1040),(580,940),(440,1140),(540,1220),(380,1300)]
-    for a,b in [(0,1),(1,2),(1,4),(2,3),(3,4),(3,5),(5,6),(5,7)]: d.line([mn[a],mn[b]],fill=WMB,width=4)
-    for nx,ny in mn: d.ellipse([nx-20,ny-20,nx+20,ny+20],fill=WMB)
-    for y0,y1,col in [(270,305,WMB),(1960,1975,WMG)]:
-        cy=(y0+y1)//2; x=0
-        while x<W:
-            d.polygon([(x,cy-13),(x+18,cy),(x,cy+13),(x-18,cy)],fill=col)
-            d.rectangle([x-3,cy-22,x+3,cy-15],fill=col)
-            d.rectangle([x-3,cy+15,x+3,cy+22],fill=col); x+=70
-    for wy,wa,off,wid in [(1440,10,0,4),(1458,10,0.8,3)]:
-        prev=None
-        for i in range(401):
-            t=i/400; x=int(t*W); y=wy+int(wa*math.sin(2*math.pi*3*t+off))
-            if prev: d.line([prev,(x,y)],fill=WMG,width=wid); prev=(x,y)
-    for row in range(8):
-        for col in range(12):
-            bx=W-720+col*56; by=1760+row*46; r=5 if (row+col)%3!=0 else 9
-            d.ellipse([bx-r,by-r,bx+r,by+r],fill=WMB)
-    for cx,cy,sz in [(250,1760,110),(350,1840,90),(175,1850,75)]:
-        pts=[]
-        for i in range(20):
-            a=(i/20)*2*math.pi; x=cx+int(sz*0.35*math.cos(a)); y=cy+int(sz*math.sin(a)*0.9)
-            rx=int((x-cx)*math.cos(math.pi/5)-(y-cy)*math.sin(math.pi/5))+cx
-            ry=int((x-cx)*math.sin(math.pi/5)+(y-cy)*math.cos(math.pi/5))+cy
-            pts.append((rx,ry))
-        d.polygon(pts,fill=WMB)
-
+    # ── NORTH EASTERN INSTRUMENT ICONS — same watermark zones, same tint,
+    # as what they replace, just a different subject: Dhol, Khol, Bodo Kham,
+    # Gogona, Pepa, Taal, Bor Taal, Japi. ──
+    icon_dhol(d, 300, 520, 90, WMB)
+    icon_khol(d, 340, 900, 85, WMB)
+    icon_kham(d, 280, 1280, 90, WMB)
+    icon_gogona(d, 420, 1620, 70, WMB)
+    icon_taal(d, 260, 1830, 70, WMB)
+    icon_pepa(d, 3050, 560, 80, WMB)
+    icon_bortaal(d, 3120, 820, 70, WMB)
+    icon_japi(d, 3180, 1040, 85, WMB)
+    icon_japi(d, 2980, 1780, 70, WMG)
+    icon_dhol(d, 3120, 1900, 75, WMG)
     d.rectangle([0,0,W,8],fill=GOLD)
 
     # ── LOGO STRIP — only collabs with a logo (independent of signatures) ──
-    LOGO_H=300; COLLAB_H=220; STRIP_TOP=10; MAX_COLLAB_LOGO_W=320
+    LOGO_H=420; COLLAB_H=220; STRIP_TOP=10; MAX_COLLAB_LOGO_W=320
 
     aif=load_img(LOGO_PATH,LOGO_H)
     if aif: img.paste(aif,(PAD,STRIP_TOP)); kai_right=PAD+aif.width
@@ -294,35 +339,38 @@ def generate(data):
     # ── CERT ID + DATE ──
     RULE_Y  = STRIP_TOP + LOGO_H + 12
     TITLE_Y = RULE_Y + 28
-    fM=font("WorkSans-Regular.ttf",34)
+    fM=font("WorkSans-Regular.ttf",42)
     d.text((W-PAD-get_tw(d,f"Certificate ID: {cert_id}",fM),STRIP_TOP+40),f"Certificate ID: {cert_id}",font=fM,fill=DGREY)
     d.text((W-PAD-get_tw(d,f"Date: {fmt_date(end_date)}",fM),STRIP_TOP+90),f"Date: {fmt_date(end_date)}",font=fM,fill=GREY)
 
     d.rectangle([0,RULE_Y,W,RULE_Y+10],fill=GOLD); d.rectangle([0,RULE_Y+10,W,RULE_Y+20],fill=NAVY)
 
-    # ── CERTIFICATE TITLE ──
+    # ── GAMOSA BAND — above 'Certificate of Completion' ──
+    band1_bottom = draw_gamosa_band(d, 0, W, RULE_Y+40)
+
+    # ── CERTIFICATE TITLE — cascades from band1, preserving original
+    # relative spacing between every element below it ──
+    y_cert = band1_bottom+50
     fBig=font("WorkSans-Bold.ttf",260)
-    d.text((MID-get_tw(d,"Certificate",fBig)//2,290),"Certificate",font=fBig,fill=NAVY)
+    d.text((MID-get_tw(d,"Certificate",fBig)//2,y_cert),"Certificate",font=fBig,fill=NAVY)
     tier_line='OF COMPLETION' if tier=='Completion' else 'OF RESEARCH CONTRIBUTION'
     fTier=font("WorkSans-Bold.ttf",76)
-    d.text((MID-get_tw(d,tier_line,fTier)//2,576),tier_line,font=fTier,fill=NAVY)
-    d.rectangle([MID-340,680,MID+340,688],fill=GOLD)
+    d.text((MID-get_tw(d,tier_line,fTier)//2,y_cert+286),tier_line,font=fTier,fill=NAVY)
+    d.rectangle([MID-340,y_cert+390,MID+340,y_cert+398],fill=GOLD)
     fC=font("Lora-Italic.ttf",46)
-    d.text((MID-get_tw(d,"This is to certify that",fC)//2,710),"This is to certify that",font=fC,fill=GREY)
+    d.text((MID-get_tw(d,"This is to certify that",fC)//2,y_cert+420),"This is to certify that",font=fC,fill=GREY)
 
     # ── RECIPIENT NAME ──
     fN=font("Lora-BoldItalic.ttf",96); nw=get_tw(d,name_str,fN)
-    d.text((MID-nw//2,790),name_str,font=fN,fill=NAVY)
-    ul=min(nw//2+130,660); d.rectangle([MID-ul,910,MID+ul,916],fill=NAVY)
+    d.text((MID-nw//2,y_cert+500),name_str,font=fN,fill=NAVY)
+    ul=min(nw//2+130,660); d.rectangle([MID-ul,y_cert+620,MID+ul,y_cert+626],fill=NAVY)
 
     # ── COURSE / INSTITUTION LINE ──
     parts=[p for p in [course,institution] if p]
     sub_line="  ·  ".join(parts)
-    SUB_Y_OFFSET=0
     if sub_line:
         fSub=font("Lora-Italic.ttf",38)
-        d.text((MID-get_tw(d,sub_line,fSub)//2,934),sub_line,font=fSub,fill=GREY)
-        SUB_Y_OFFSET=58
+        d.text((MID-get_tw(d,sub_line,fSub)//2,y_cert+644),sub_line,font=fSub,fill=GREY)
 
     # ── BODY TEXT ──
     fBo=font("Lora-Regular.ttf",40); fBi=font("Lora-Italic.ttf",40)
@@ -334,7 +382,7 @@ def generate(data):
     lines=[(f"has successfully completed the {programme}",fBo),(org_line,fBo),
            ("participating in the research track:",fBo),(f"'{track}'",fBi),
            (f"from {fmt_date(start_date)} to {fmt_date(end_date)}.",fBo)]
-    y=TITLE_Y+620
+    y=y_cert+680
     for txt,fnt_ in lines:
         sz=40 if get_tw(d,txt,fnt_)<W-PAD*4 else 34
         fu=font("Lora-Italic.ttf" if fnt_==fBi else "Lora-Regular.ttf",sz)
@@ -358,8 +406,8 @@ def generate(data):
     REG_LINE = "CIN: U88900AS2025NPL028634  ·  Section 8 Licence No: 171467"
     d.text((W-PAD-get_tw(d,REG_LINE,fF),L1_Y),
            REG_LINE,font=fF,fill=GREY)
-    d.text((W-PAD-get_tw(d,"12A  ·  80G  ·  CSR-1 Registered",fFsm),L2_Y),
-           "12A  ·  80G  ·  CSR-1 Registered",font=fFsm,fill=GREY)
+    d.text((W-PAD-get_tw(d,"12A  ·  80G Registered",fFsm),L2_Y),
+           "12A  ·  80G Registered",font=fFsm,fill=GREY)
     d.text((W-PAD-get_tw(d,"Verify at: verify.aarhiimpactfoundation.org",fFsm),L3_Y),
            "Verify at: verify.aarhiimpactfoundation.org",font=fFsm,fill=BLUE)
 
@@ -367,23 +415,23 @@ def generate(data):
     SIG_IMG_H     = 120
     SIG_DIVIDER_Y = L1_Y - 190
     SIG_Y         = SIG_DIVIDER_Y + 14
-    d.rectangle([PAD,SIG_DIVIDER_Y,W-PAD,SIG_DIVIDER_Y+2],fill=LGREY)
+    # ── GAMOSA BAND — just above the signature strip ──
+    draw_gamosa_band(d, 0, W, SIG_DIVIDER_Y-44)
 
     sigs=[]
 
     # NJK — always first
     # Priority: R2 URL → local PNG → Brittany font → NothingYouCouldDo
+    # NJK — always included, no toggle. Falls back to real signature image,
+    # then to a script-font rendering of the name if no image is on file.
     njk_key = meta.get('njk_sig_key', 'signatures/sig_njk.png')
     sig_n = load_r2_img(njk_key, SIG_IMG_H)
     if not sig_n: sig_n = load_img(SIG_NJK, SIG_IMG_H)
     if not sig_n: sig_n = make_sig_img("Nayan J Kalita", SIG_FONT_BRITTANY, size=85, max_w=300, max_h=SIG_IMG_H)
     sigs.append({'img':sig_n,'name':'Nayan Jyoti Kalita','title':'Director, Aarhi Impact Foundation'})
 
-    # Alakesh — if toggled
-    # NOTE: this still reads the `show_njk_signature` meta/data key from the admin
-    # portal for now (unchanged external contract). Rename to `show_alakesh_signature`
-    # in aif-programmes once that repo's form/API is edited too — see chat notes.
-    if show_njk:
+    # Alakesh — only included if the admin explicitly toggles this on
+    if show_alakesh:
         alakesh_key = meta.get('alakesh_sig_key', 'signatures/sig_alakesh.png')
         sig_a = load_r2_img(alakesh_key, SIG_IMG_H)
         if not sig_a: sig_a = load_img(SIG_ALAKESH, SIG_IMG_H)
@@ -400,7 +448,7 @@ def generate(data):
 
     # Dynamic font size — scales down as n_sigs increases, no overlap
     n_sigs     = len(sigs)
-    name_size  = max(22, 32-(n_sigs-1)*2)
+    name_size  = max(28, 38-(n_sigs-1)*2)
     title_size = max(18, 26-(n_sigs-1)*2)
     fSN=font("WorkSans-Regular.ttf",name_size)
     fSS=font("WorkSans-Regular.ttf",title_size)
@@ -438,7 +486,7 @@ def generate(data):
     d.rectangle([0,FOOTER_BAR_Y,  W,FOOTER_BAR_Y+8],fill=GOLD)
     d.rectangle([0,FOOTER_BAR_Y+8,W,H],             fill=NAVY)
     fBot=font("WorkSans-Regular.ttf",24)
-    em="certificates@aarhiimpactfoundation.org"; cp="© 2026 Aarhi Impact Foundation"
+    em="info@aarhiimpactfoundation.org"; cp="© 2026 Aarhi Impact Foundation"
     d.text((PAD,FOOTER_TEXT_Y),em,font=fBot,fill=(160,170,215))
     d.text((W-PAD-get_tw(d,cp,fBot),FOOTER_TEXT_Y),cp,font=fBot,fill=(160,170,215))
 

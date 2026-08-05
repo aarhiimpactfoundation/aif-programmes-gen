@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 archive_cert.py — Save generated certificate PDF to the
-a private GitHub repository.
+khyontek-certificates private GitHub repository.
 Called by GitHub Actions after PDF generation.
 """
 import sys
@@ -18,7 +18,7 @@ def main():
     parser.add_argument('--pdf',   required=True)
     parser.add_argument('--token', required=True)
     parser.add_argument('--repo',  required=True,
-                        help='org/repo-name e.g. aarhiimpactfoundation/aif-certificates')
+                        help='org/repo-name e.g. khyontekAI/khyontek-certificates')
     args = parser.parse_args()
 
     data    = json.loads(args.data)
