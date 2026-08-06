@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Certificate Verification — Khyontek AI</title>
-  <meta name="description" content="Verify certificates issued by Khyontek AI Pvt Ltd." />
+  <title>Certificate Verification — Aarhi Impact Foundation</title>
+  <meta name="description" content="Verify certificates issued by Aarhi Impact Foundation." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Italiana&family=Lora:ital,wght@0,400;0,600;1,400&family=Jura:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --navy:#1A2870; --blue:#2B3EAA; --gold:#F5A623;
+      --navy:#0D3B3E; --blue:#0D3B3E; --gold:#E8A838;
       --white:#FFFFFF; --off:#F5F6FA; --grey:#8A8FA8;
       --mgrey:#C5C9D8; --lgrey:#ECEEF6; --dgrey:#2E3355;
       --error:#C0392B; --success:#1A6B3C;
@@ -114,13 +114,13 @@
     <div class="bracket-tl"></div>
     <div class="bracket-br"></div>
     <div class="logo-block">
-      <div class="logo-wordmark">Khyontek.ai</div>
+      <div class="logo-wordmark">Aarhi Impact Foundation</div>
       <div class="logo-rule"></div>
-      <div class="logo-tagline">The Shape of Intelligence</div>
+      <div class="logo-tagline">12A &middot; 80G &middot; CSR-1 Registered</div>
     </div>
     <div class="panel-description">
-      <p>This portal verifies certificates issued by Khyontek AI Pvt Ltd for research programmes, internships, and workshops.</p>
-      <p class="cin">CIN: U62020AS2026PTC029657<br>Guwahati, Assam, India<br>programmes@khyontekai.com</p>
+      <p>This portal verifies certificates issued by Aarhi Impact Foundation for internships, field programmes, and training.</p>
+      <p class="cin">CIN: U88900AS2025NPL028634 &middot; Section 8 Licence No. 171467<br>Guwahati, Assam, India<br>info@aarhiimpactfoundation.org</p>
     </div>
   </aside>
 
@@ -136,8 +136,8 @@
       <div class="verify-form">
         <div class="field-group">
           <label class="field-label" for="cert-id">Certificate ID</label>
-          <input class="field-input" type="text" id="cert-id" placeholder="KAI-SRIP-260001" autocomplete="off" spellcheck="false"/>
-          <div class="field-hint">Format: KAI-[PROG]-[YY][SERIAL] &middot; e.g. KAI-SRIP-260001</div>
+          <input class="field-input" type="text" id="cert-id" placeholder="AIF-INT-260001" autocomplete="off" spellcheck="false"/>
+          <div class="field-hint">Format: AIF-[PROG]-[YY][SERIAL] &middot; e.g. AIF-INT-260001</div>
         </div>
         <div class="field-group">
           <label class="field-label" for="email">Registered Email Address</label>
@@ -155,7 +155,7 @@
         <div class="result-card">
           <div class="result-header">
             <div class="result-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#E8A838" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>
             </div>
@@ -219,11 +219,11 @@
 </div>
 
 <footer class="page-footer">
-  <a href="https://khyontekai.com" target="_blank">khyontekai.com</a>
+  <a href="https://aarhiimpactfoundation.org" target="_blank">aarhiimpactfoundation.org</a>
   &nbsp;&middot;&nbsp;
-  <a href="mailto:programmes@khyontekai.com">programmes@khyontekai.com</a>
+  <a href="mailto:info@aarhiimpactfoundation.org">info@aarhiimpactfoundation.org</a>
   &nbsp;&middot;&nbsp;
-  &copy; 2026 Khyontek AI Pvt Ltd
+  &copy; 2026 Aarhi Impact Foundation
 </footer>
 
 <script>
@@ -252,7 +252,7 @@
     document.getElementById('res-track').textContent=data.track||'—';
     document.getElementById('res-duration').textContent=data.duration||'—';
     document.getElementById('res-issue-date').textContent=formatDate(data.issue_date);
-    document.getElementById('res-issued-by').textContent=(data.issued_by||[]).join(' · ')||'Khyontek AI Pvt Ltd';
+    document.getElementById('res-issued-by').textContent=(data.issued_by||[]).join(' · ')||'Aarhi Impact Foundation';
     document.getElementById('res-cert-id').textContent='ID: '+(data.cert_id||'—');
     const badge=document.getElementById('res-tier-badge');
     badge.textContent=data.tier||'—';
@@ -302,7 +302,7 @@
       const data=await res.json();
       if(res.status===429){showMsg('form-message','Too many attempts. Please try again later.','rate');}
       else if(res.status===404||res.status===401){showMsg('form-message','Details do not match our records. Please check your Certificate ID and email address.','error');}
-      else if(res.status===410){showMsg('form-message','This certificate has been revoked. Contact programmes@khyontekai.com for assistance.','error');}
+      else if(res.status===410){showMsg('form-message','This certificate has been revoked. Contact info@aarhiimpactfoundation.org for assistance.','error');}
       else if(!res.ok){showMsg('form-message','Something went wrong. Please try again in a moment.','error');}
       else{populateResult(data);}
     }catch{
@@ -324,9 +324,9 @@
         body:JSON.stringify({cert_id:verifiedCertId,email:verifiedEmail,action:'resend'})});
       const data=await res.json();
       if(res.ok){showMsg('resend-message',data.message||'Certificate resent. Please check your email.','success');}
-      else{showMsg('resend-message',data.error||'Resend failed. Please contact programmes@khyontekai.com','error');}
+      else{showMsg('resend-message',data.error||'Resend failed. Please contact info@aarhiimpactfoundation.org','error');}
     }catch{
-      showMsg('resend-message','Network error. Please contact programmes@khyontekai.com','error');
+      showMsg('resend-message','Network error. Please contact info@aarhiimpactfoundation.org','error');
     }finally{
       btn.disabled=false;
       btn.textContent='Resend Certificate to My Email';

@@ -21,7 +21,7 @@ def main():
 
     data       = json.loads(args.data)
     api_key    = os.environ['RESEND_API_KEY']
-    from_email = 'certificates@aarhiimpactfoundation.org'
+    from_email = 'info@aarhiimpactfoundation.org'
     to_email   = data['email']
     first_name = data['recipient_name'].split()[0]
     cert_id    = data['cert_id']
@@ -88,7 +88,7 @@ def main():
   </div>
   <div style="background:#F5F6FA;padding:20px 40px;text-align:center;font-size:11px;color:#8A8FA8;border-top:1px solid #ECF3F3;">
     <a href="https://aarhiimpactfoundation.org" style="color:#0D3B3E;text-decoration:none;">aarhiimpactfoundation.org</a> &nbsp;·&nbsp;
-    <a href="mailto:certificates@aarhiimpactfoundation.org" style="color:#0D3B3E;text-decoration:none;">certificates@aarhiimpactfoundation.org</a><br/>
+    <a href="mailto:info@aarhiimpactfoundation.org" style="color:#0D3B3E;text-decoration:none;">info@aarhiimpactfoundation.org</a><br/>
     © 2026 Aarhi Impact Foundation. All rights reserved.
   </div>
 </div>

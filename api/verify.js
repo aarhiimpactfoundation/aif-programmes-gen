@@ -5,10 +5,10 @@ import { MongoClient } from 'mongodb';
 import crypto from 'crypto';
 
 const MONGODB_URI    = process.env.MONGODB_URI;
-const DB_NAME        = process.env.DB_NAME || 'khyontek_certs';
+const DB_NAME        = process.env.DB_NAME || 'aarhi_certs';
 const EMAIL_SALT     = process.env.EMAIL_SALT;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const ADMIN_EMAIL    = process.env.ADMIN_EMAIL || 'contact@khyontekai.com';
+const ADMIN_EMAIL    = process.env.ADMIN_EMAIL || 'info@aarhiimpactfoundation.org';
 const GH_PAT         = process.env.GH_PAT;
 const GH_DISPATCH_URL= process.env.GH_DISPATCH_URL;
 
@@ -44,18 +44,18 @@ async function notifyAdmin(record, ip) {
       method:'POST',
       headers:{'Authorization':`Bearer ${RESEND_API_KEY}`,'Content-Type':'application/json'},
       body:JSON.stringify({
-        from:'Khyontek AI System <programmes@khyontekai.com>',
+        from:'Aarhi Impact Foundation <info@aarhiimpactfoundation.org>',
         to:[ADMIN_EMAIL],
         subject:`Certificate Verified — ${record.cert_id}`,
         html:`<p>A certificate was verified at <strong>${now} IST</strong>.</p>
               <table style="border-collapse:collapse;font-family:Arial;font-size:14px;">
-              <tr><td style="padding:6px 16px 6px 0;color:#8A8FA8;">Certificate ID</td><td style="padding:6px 0;color:#1A2870;font-weight:bold;">${record.cert_id}</td></tr>
+              <tr><td style="padding:6px 16px 6px 0;color:#8A8FA8;">Certificate ID</td><td style="padding:6px 0;color:#0D3B3E;font-weight:bold;">${record.cert_id}</td></tr>
               <tr><td style="padding:6px 16px 6px 0;color:#8A8FA8;">Recipient</td><td style="padding:6px 0;">${record.recipient_name}</td></tr>
               <tr><td style="padding:6px 16px 6px 0;color:#8A8FA8;">Programme</td><td style="padding:6px 0;">${record.programme}</td></tr>
               <tr><td style="padding:6px 16px 6px 0;color:#8A8FA8;">Track</td><td style="padding:6px 0;">${record.track}</td></tr>
               <tr><td style="padding:6px 16px 6px 0;color:#8A8FA8;">IP Address</td><td style="padding:6px 0;">${ip}</td></tr>
               </table>
-              <p style="color:#8A8FA8;font-size:12px;margin-top:20px;">Automated notification from verify.khyontekai.com</p>`
+              <p style="color:#8A8FA8;font-size:12px;margin-top:20px;">Automated notification from verify.aarhiimpactfoundation.org</p>`
       })
     });
   } catch(e) { console.error('Admin notify failed:',e.message); }
@@ -76,7 +76,7 @@ export default async function handler(req,res) {
   if (!email||!email.includes('@'))        return res.status(400).json({error:'Invalid email address.'});
 
   const cleanId=cert_id.trim().toUpperCase();
-  if (!/^KAI-[A-Z0-9]+-\d{6,8}$/.test(cleanId))
+  if (!/^AIF-[A-Z0-9]+-\d{6,8}$/.test(cleanId))
     return res.status(404).json({error:'Details do not match our records.'});
 
   try {
@@ -96,12 +96,12 @@ export default async function handler(req,res) {
       return res.status(401).json({error:'Details do not match our records.'});
 
     if (record.status==='revoked')
-      return res.status(410).json({error:'This certificate has been revoked. Contact programmes@khyontekai.com for assistance.'});
+      return res.status(410).json({error:'This certificate has been revoked. Contact info@aarhiimpactfoundation.org for assistance.'});
 
     // Resend action — trigger GitHub Action
     if (action==='resend') {
       if (!GH_PAT||!GH_DISPATCH_URL)
-        return res.status(500).json({error:'Resend not configured. Contact programmes@khyontekai.com'});
+        return res.status(500).json({error:'Resend not configured. Contact info@aarhiimpactfoundation.org'});
       try {
         const r=await fetch(GH_DISPATCH_URL,{
           method:'POST',
@@ -109,9 +109,9 @@ export default async function handler(req,res) {
           body:JSON.stringify({event_type:'resend_certificate',client_payload:{cert_id:cleanId,email}})
         });
         if (r.status===204) return res.status(200).json({message:'Certificate resent. Please check your email within 2 minutes.'});
-        return res.status(500).json({error:'Resend failed. Please contact programmes@khyontekai.com'});
+        return res.status(500).json({error:'Resend failed. Please contact info@aarhiimpactfoundation.org'});
       } catch(e) {
-        return res.status(500).json({error:'Resend failed. Please contact programmes@khyontekai.com'});
+        return res.status(500).json({error:'Resend failed. Please contact info@aarhiimpactfoundation.org'});
       }
     }
 
